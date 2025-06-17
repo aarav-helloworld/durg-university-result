@@ -5,12 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Durg University | Results</title>
+    <meta name="description" content="Check your Durg University examination results quickly and easily. Enter your roll number to view your marks and performance details.">
+    <meta property="og:title" content="Durg University | Examination Results">
+    <meta property="og:description" content="Access your official Durg University (Hemchand Yadav Vishwavidyalaya) examination results. Enter your roll number to proceed.">
+    <meta property="og:image" content="durg_logo.jpg"> <!-- Make sure this path is correct and the image is accessible -->
+    <meta property="og:url" content="https://your-website-url.com"> <!-- Replace with your actual website URL -->
+    <meta property="og:type" content="website">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+        integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
     <div class="header">
-        <img src="durg_logo.jpg" alt="">
+        <img src="durg_logo.jpg" alt="Durg University Logo">
+        <span class="examination-system-text">EXAMINATION SYSTEM</span>
     </div>
     <hr width="100%" size="5px" color="#ADD6EF">
     <div class="bar"></div>
@@ -19,31 +29,224 @@
             <p>Search Your Result</p>
         </div>
         <div class="form">
-                <label for="roll">ROLLNO <span class="required">*</span></label>
-                <input type="number" id="roll" placeholder="ROLLNO" required>
-                <div class="form-button">
-                    <button type="submit" id="submit" onclick="popup()"> &#128269; Search Result</button>
-                    <button type="reset">Reset</button>
-                </div>
+            <label for="roll">ROLLNO <span class="required">*</span></label>
+            <input type="number" id="roll" placeholder="ROLLNO" required>
+            <div class="form-button">
+                <button type="submit" id="searchResultBtn"><i class="fas fa-search"></i> Search Result</button>
+                <button type="reset">Reset</button>
+            </div>
         </div>
     </div>
     <div class="footer">
         Hemchand Yadav Vishwavidyalaya, Durg (C.G.) <span>Smart Examination System</span> © 2024 - 2025
     </div>
-    <div class="click close" id="click">
-        <div>
-            <p>Chutiya Banaya Tumko</p>
-            <button type="button">😂</button>
-        </div>
 
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay close">
+        <div class="loading-spinner">
+            <p id="loadingText">Connecting</p>
+        </div>
     </div>
+
+    <!-- Prank Modal -->
+    <div id="prankModal" class="modal close">
+        <div class="modal-content">
+            <p id="modalText">Server ne aapka result dekhte hi resign de diya.</p>
+            <div id="modalButtons" class="modal-buttons">
+                {/* Buttons will be injected here by JS */}
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div id="toastMessage" class="toast close">
+        <p>Chal Ab Kal Check Karna 😂</p>
+    </div>
+
+    <!-- Validation Alert Pop-up -->
+    <div id="validationAlert" class="validation-alert close">
+        <div class="validation-alert-content">
+            <div class="validation-alert-header">
+                <p id="validationAlertTitle">This is a warning message!</p>
+                <button id="closeValidationAlertBtn" class="validation-alert-close-btn">&times;</button>
+            </div>
+            <div class="validation-alert-body">
+                <p id="validationAlertMessage">Please fill the required data to proceed.</p>
+            </div>
+            <div class="validation-alert-footer">
+                <button id="okValidationAlertBtn" class="validation-alert-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="support-button">Support</div>
+
 </body>
 <script>
-    click = document.getElementById("click");
-    function popup() {
-        click.classList.add("pop-up");
-        click.classList.remove("close");
+    const searchResultBtn = document.getElementById("searchResultBtn");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingTextElement = document.getElementById("loadingText");
+    const prankModal = document.getElementById("prankModal");
+    const modalText = document.getElementById("modalText");
+    const modalButtonsContainer = document.getElementById("modalButtons");
+    const toastMessage = document.getElementById("toastMessage");
+
+    // Validation Alert Elements
+    const validationAlert = document.getElementById("validationAlert");
+    const validationAlertTitle = document.getElementById("validationAlertTitle");
+    const validationAlertMessage = document.getElementById("validationAlertMessage");
+    const closeValidationAlertBtn = document.getElementById("closeValidationAlertBtn");
+    const okValidationAlertBtn = document.getElementById("okValidationAlertBtn");
+
+    const rollNoInput = document.getElementById("roll"); // Get roll number input
+
+    const jokes = [
+        "Server ne aapka result dekhte hi resign de diya.",
+        "Aapka result toh aaya hai... lekin sapne mein!",
+        "Result dekhne se pehle, please apne emotions ka backup le lijiye.",
+        "Aapka result to aaye bina viral ho gaya!",
+        "Result itna secret hai ki CIA bhi nahi dhoondh paayi.",
+        "Calculator ne result dekhte hi retirement le liya.",
+    ];
+
+    let loadingInterval;
+
+    function showLoading() {
+        loadingOverlay.classList.remove("close");
+        loadingOverlay.classList.add("pop-up");
+        let dots = 0;
+        loadingTextElement.textContent = "Fetching"; // Updated text
+        loadingInterval = setInterval(() => {
+            dots = (dots + 1) % 4;
+            loadingTextElement.textContent = "Loading" + ".".repeat(dots); // Updated text
+        }, 500);
     }
+
+    function hideLoading() {
+        clearInterval(loadingInterval);
+        loadingOverlay.classList.add("close");
+        loadingOverlay.classList.remove("pop-up");
+    }
+
+    // Validation Alert Functions
+    function showValidationAlert(title, message) {
+        validationAlertTitle.textContent = title;
+        validationAlertMessage.textContent = message;
+        validationAlert.classList.remove("close");
+        validationAlert.classList.add("pop-up");
+    }
+
+    function hideValidationAlert() {
+        validationAlert.classList.add("close");
+        validationAlert.classList.remove("pop-up");
+    }
+
+    closeValidationAlertBtn.addEventListener("click", hideValidationAlert);
+    okValidationAlertBtn.addEventListener("click", hideValidationAlert);
+
+    // Add event listeners for roll number input focus and blur
+    let hasFocused = false;
+    rollNoInput.addEventListener("focus", () => {
+        hasFocused = true;
+        rollNoInput.classList.remove("focused-and-blurred"); // Remove yellow border on focus
+    });
+
+    rollNoInput.addEventListener("blur", () => {
+        if (hasFocused) {
+            rollNoInput.classList.add("focused-and-blurred"); // Add yellow border on blur if it was focused
+        }
+    });
+
+
+    function showPrankModal(joke) { // Renamed from showModal to avoid confusion
+        modalText.textContent = joke;
+        modalButtonsContainer.innerHTML =
+            '<button class="modal-btn" id="thikHaiBtnModal">Thik hai</button>' +
+            '<button class="modal-btn" id="samajhGayaBtnModal">Samajh gaya</button>';
+        
+        prankModal.classList.remove("close");
+        prankModal.classList.add("pop-up");
+
+        document.getElementById("thikHaiBtnModal").addEventListener("click", handleThikHai);
+        document.getElementById("samajhGayaBtnModal").addEventListener("click", handleSamajhGaya);
+    }
+
+    function handleThikHai() {
+        modalText.textContent = "Par Results Thik Nahi Hai 🥲";
+        modalText.classList.add("animated-follow-up"); // Add animation class
+        modalButtonsContainer.innerHTML = '<button class="modal-btn" id="okBtnModal">OK</button>';
+        document.getElementById("okBtnModal").addEventListener("click", closeModalAndShowToast);
+        // Remove animation class after it plays to allow re-triggering if needed
+        modalText.addEventListener('animationend', () => {
+            modalText.classList.remove('animated-follow-up');
+        }, { once: true });
+    }
+
+    function handleSamajhGaya() {
+        modalText.textContent = "Result Jaldi Aane Se Number Nahi Badhne Wale, Ye Bhi Samajh Ja 😁";
+        modalText.classList.add("animated-follow-up"); // Add animation class
+        modalButtonsContainer.innerHTML = '<button class="modal-btn" id="okBtnModal">OK</button>';
+        document.getElementById("okBtnModal").addEventListener("click", closeModalAndShowToast);
+        // Remove animation class after it plays
+        modalText.addEventListener('animationend', () => {
+            modalText.classList.remove('animated-follow-up');
+        }, { once: true });
+    }
+
+    function closeModalAndShowToast() {
+        prankModal.classList.add("close");
+        prankModal.classList.remove("pop-up");
+        showToast();
+    }
+
+    function showToast() {
+        toastMessage.classList.remove("close");
+        toastMessage.classList.add("pop-up");
+        setTimeout(() => {
+            toastMessage.classList.add("close");
+            toastMessage.classList.remove("pop-up");
+        }, 3000);
+    }
+
+    searchResultBtn.addEventListener("click", () => {
+        // const rollNoInput = document.getElementById("roll"); // Already defined globally
+        const rollNoValue = rollNoInput.value.trim();
+
+        if (!rollNoValue) {
+            showValidationAlert("This is a warning message!", "Please fill the required data to proceed.");
+            return;
+        }
+        if (rollNoValue.length < 6) {
+            showValidationAlert("This is a warning message!", "Make sure you have entred correct roll number!!");
+            return;
+        }
+
+        showLoading();
+        setTimeout(() => {
+            hideLoading();
+            const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+            showPrankModal(randomJoke); // Changed to showPrankModal
+        }, Math.random() * 1000 + 3000);
+    });
+
+    const resetBtn = document.querySelector("button[type='reset']");
+    if (resetBtn) {
+        resetBtn.addEventListener("click", () => {
+            document.getElementById("roll").value = "";
+            prankModal.classList.add("close");
+            prankModal.classList.remove("pop-up");
+            loadingOverlay.classList.add("close");
+            loadingOverlay.classList.remove("pop-up");
+            toastMessage.classList.add("close");
+            toastMessage.classList.remove("pop-up");
+            validationAlert.classList.add("close"); // Also close validation alert on reset
+            validationAlert.classList.remove("pop-up");
+            rollNoInput.classList.remove("focused-and-blurred"); // Remove yellow border on reset
+            hasFocused = false; // Reset focus state
+            if (loadingInterval) clearInterval(loadingInterval);
+        });
+    }
+
 </script>
 
 </html>
