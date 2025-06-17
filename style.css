@@ -4,15 +4,28 @@
     margin: 0;
     box-sizing: border-box;
 }
+body {
+    /* background-color: #f0f0f0; */ /* Reverted to original or let browser default */
+    font-family: Arial, sans-serif; /* Keeping a default font */
+}
 .header
 {
     display: flex;
     align-items: center;
+    justify-content: space-between; /* To position text to the right */
     padding: 0 10px;
 }
 .header img{
     width: 350px;
 }
+
+.examination-system-text {
+    font-size: 1em; /* Reverted to original size */
+    color: #808080; /* Grey color */
+    margin-right: 20px; /* Add some spacing */
+    font-weight: normal; /* Reverted to normal weight */
+}
+
 .bar
 {
     height: 40px;
@@ -27,10 +40,11 @@
 .main
 {
     width: 95%;
-    height: 200px;
+    /* height: 200px; */ /* Allowing auto height */
     margin: auto;
     box-shadow: 0px 0px 10px #aaaaac;
     border-radius: 2px;
+    /* padding: 20px; */ /* Reverted */
 }
 .main-header
 {
@@ -40,12 +54,20 @@
     background-color: #444444;
     display: flex;
     align-items: center;
+    /* margin: -20px -20px 20px -20px; */ /* Reverted */
+    /* border-radius: 5px 5px 0 0; */ /* Reverted */
 }
+/* .main-header p { */ /* Reverted */
+    /* font-size: 1.2em; 
+    font-weight: bold;
+} */
+
 .form
 {
     display: flex;
     flex-direction: column;
     padding: 20px;
+    /* gap: 15px; */ /* Reverted */
 }
 .form label{
     font-size: 12px;
@@ -55,88 +77,378 @@
 
 #roll
 {
-    width: 80%;
-    border: 1px solid #000000;
+    width: 80%; /* Reverted */
+    border: 1px solid #cccccc; /* Changed to thin grey border */
     padding: 10px;
     outline: none;
+    transition: border-color 0.3s ease-in-out; /* Added transition */
+    /* border-radius: 3px; */ /* Reverted */
+    /* font-size: 16px; */ /* Reverted */
 }
+
+#roll.focused-and-blurred { /* New class for yellow border on blur after focus */
+    border-color: #F6C12A;
+}
+
+/* .form-button { */ /* Reverted */
+    /* display: flex;
+    gap: 10px; 
+    margin-top: 10px; 
+} */
 
 button[type="reset"]{
     color: #fff;
     padding: 10px;
-    border: none;
+    border: none; /* Original style */
     border-radius: 2px;
     background-color:#E74B37 ;
     margin: 10px 0px ;
     cursor: pointer;
     margin-top: 50px;
     margin-left: 80px;
+    /* font-size: 16px; */ /* Reverted */
+    /* transition: background-color 0.2s ease-in-out; */ /* Reverted */
 }
-button[type="submit"]{
+/* button[type="reset"]:hover { */ /* Reverted */
+    /* background-color: #d63a26;
+} */
+
+button[type="submit"]{ 
     color: #fff;
     padding: 10px;
-    border: none;
+    border: none; /* Original style */
     border-radius: 2px;
     background-color:#F6C12A ;
     cursor: pointer;
+    /* font-size: 16px; */ /* Reverted */
+    /* transition: background-color 0.2s ease-in-out; */ /* Reverted */
 }
+
+/* Ensuring only the correct search icon style is present */
+button[type="submit"]::before {
+    content: none; /* Remove the CSS ::before icon */
+}
+
+/* Style for Font Awesome icon if needed, though it usually inherits color well */
+button[type="submit"] .fas.fa-search {
+    margin-right: 7px;
+    /* color: white; /* This should be inherited from the button text color */
+}
+
 .footer
 {
-    background-color: #990000;
-    height: 70px;
+    background-color: #990000; /* Reverted */
+    height: 70px; /* Reverted */
     width: 100%;
     color: #fff;
-    position: absolute;
+    position: absolute; /* Reverted */
     bottom: 0;
-    padding: 10px;
+    padding: 10px; /* Reverted */
     text-align: center;
+    /* font-size: 0.9em; */ /* Reverted */
 }
 .footer span
 {
-    color: #5DB2FF;
+    color: #5DB2FF; /* Reverted */
     cursor: text;
 }
 
-.click
-{
-    position: absolute;
-    width: 95%;
-    height: 200px;
-    background-color: #fafbfc;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%,-51%);
-    transition: display 1s linear;
-}
-.click div
-{
+/* Loading Overlay Styles */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.7); 
+    display: flex; 
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    z-index: 1000;
+    transition: opacity 0.3s ease-in-out; 
 }
-.click p
-{
-    color:010101;
-    text-align: center;
-    font-size: 30px;
-}
-.click button
-{
+
+.loading-spinner p {
     color: #fff;
-    background-color: dodgerblue;
+    font-size: 1.2em; 
+    text-align: center;
+    background-color: #444444; 
+    padding: 15px 25px;
+    border-radius: 3px;
+}
+
+/* Prank Modal Styles (was .click) */
+.modal { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    opacity: 0; 
+    /* transform: scale(0.95); */ /* Removed transform from modal overlay */
+    transition: opacity 0.2s ease-in-out; /* Adjusted transition for overlay */
+}
+
+.modal.pop-up { 
+    opacity: 1;
+    /* transform: scale(1); */ /* Removed transform from modal overlay */
+}
+
+.modal-content { 
+    background-color: #fafbfc; 
+    padding: 25px; 
+    border-radius: 5px; 
+    box-shadow: 0px 0px 15px rgba(0,0,0,0.2); 
+    text-align: center;
+    width: 90%; 
+    max-width: 400px; 
+    opacity: 0; /* Initial state for animation */
+    transform: scale(0.5); /* Initial state for animation */
+}
+
+/* Apply new animation to modal content when popped up */
+.modal.pop-up .modal-content {
+    animation: dramaticModalEntry 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+@keyframes dramaticModalEntry {
+    0% {
+        transform: scale(0.5) rotate(-10deg);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.05) rotate(3deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+/* New animation for follow-up text in modal */
+@keyframes followUpTextAnimation {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content .animated-follow-up {
+    animation: followUpTextAnimation 0.4s ease-out;
+}
+
+.modal-content p { 
+    color: #010101; 
+    text-align: center;
+    font-size: 18px; 
+    margin-bottom: 20px;
+}
+
+.modal-buttons { 
+    display: flex;
+    justify-content: center; 
+    gap: 10px; 
+    width: 100%;
+}
+
+.modal-btn {
+    color: #fff; 
+    padding: 8px 15px; 
+    border: 1px solid #555; 
+    border-radius: 3px; 
+    cursor: pointer;
+    font-size: 14px; 
+    background-color: #F6C12A; 
+    transition: background-color 0.2s ease-in-out, filter 0.2s ease-in-out; /* Added filter transition */
+}
+.modal-btn:hover {
+    filter: brightness(90%); 
+}
+
+#thikHaiBtnModal { 
+    background-color: #4CAF50; 
+    border-color: #3e8e41; /* Matching border */
+}
+
+#samajhGayaBtnModal {
+    background-color: #E74B37; 
+    border-color: #c4301d; /* Matching border */
+}
+
+#okBtnModal { 
+    background-color: #007bff; 
+    border-color: #0069d9; /* Matching border */
+}
+
+
+/* Toast Message Styles */
+.toast {
+    position: fixed;
+    /* bottom: -100px; */ /* Old position */
+    top: -100px; /* New: Initially off-screen at the top */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffe0; 
+    color: #333; 
+    padding: 10px 20px;
     border-radius: 5px;
-    padding: 5px;
-    font-size: 30px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1001;
+    opacity: 0; 
+    /* transition: opacity 0.3s ease-in-out, bottom 0.3s ease-in-out; */ /* Old transition */
+    transition: opacity 0.3s ease-in-out, top 0.3s ease-in-out; /* New transition for top */
+}
+
+.toast.pop-up { 
+    opacity: 1;
+    /* bottom: 20px; */ /* Old position */
+    top: 20px; /* New: On-screen at the top */
+}
+
+/* Validation Alert Pop-up Styles */
+.validation-alert {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1005; 
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+}
+
+.validation-alert.pop-up {
+    opacity: 1;
+}
+
+.validation-alert-content {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 400px;
+    overflow: hidden; 
+    animation: flyIn 0.3s ease-out;
+}
+
+@keyframes flyIn {
+    from {
+        transform: translateY(-30px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.validation-alert-header {
+    background-color: #007bff; 
+    color: white;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.validation-alert-header p {
+    margin: 0;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.validation-alert-close-btn {
+    background: none;
     border: none;
+    color: white;
+    font-size: 1.5em;
+    line-height: 1; /* Added for better vertical alignment */
+    cursor: pointer;
+    padding: 0 5px;
 }
-.pop-up
-{
-    display: block;
+
+.validation-alert-body {
+    padding: 20px 15px;
+    font-size: 0.9em;
+    color: #333;
 }
-.close
-{
-    display: none;
+
+.validation-alert-body p {
+    margin: 0;
+}
+
+.validation-alert-footer {
+    padding: 10px 15px;
+    text-align: right;
+    background-color: #f9f9f9; 
+    border-top: 1px solid #eee;
+}
+
+.validation-alert-ok-btn {
+    background-color: #007bff; /* Matching header */
+    color: white;
+    border: 1px solid #0069d9; /* Darker border for depth */
+    padding: 8px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.validation-alert-ok-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Utility classes for controlling visibility */
+.close {
+    display: none !important; 
+    opacity: 0; 
+}
+
+.loading-overlay.pop-up,
+.modal.pop-up,
+.validation-alert.pop-up { 
+    display: flex; 
+}
+.toast.pop-up {
+    display: block; 
+}
+
+/* Sticky Support Button */
+.support-button {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(270deg); /* Rotate text vertically */
+    transform-origin: bottom right;
+    background-color: #008000; /* Green background */
+    color: white;
+    padding: 10px 15px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    cursor: pointer;
+    z-index: 990;
+    font-size: 0.9em;
+    box-shadow: -2px 0px 5px rgba(0,0,0,0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .examination-system-text {
+        display: none; /* Hide examination system text on smaller screens */
+    }
 }
